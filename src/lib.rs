@@ -7,7 +7,7 @@ type MyResult<T> = Result<T, Box<dyn Error>>;
 pub struct Config {
     files: Vec<String>,
     lines: usize,
-    bytes: Option<usize>,
+    //bytes: Option<usize>,
 }
 
 pub fn get_args() -> MyResult<Config> {
@@ -19,7 +19,8 @@ pub fn get_args() -> MyResult<Config> {
             Arg::new("files")
                 .value_name("FILES")
                 .help("list of files")
-                .action(ArgAction::Append),
+                .action(ArgAction::Append)
+                .default_value("-"),
         )
         .arg(
             Arg::new("lines")
@@ -27,6 +28,7 @@ pub fn get_args() -> MyResult<Config> {
                 .help("Print the first K lines instead of the first 10")
                 .short('n')
                 .long("lines")
+                .default_value("10")
                 .num_args(1),
         )
         .arg(
@@ -45,9 +47,19 @@ pub fn get_args() -> MyResult<Config> {
         .filter_map(|s: &String| s.parse::<String>().ok())
         .collect();
 
+    let lines = args
+        .get_one::<String>("lines")
+        .ok_or("shouldnt happen")?
+        .parse::<usize>()?;
+
     Ok(Config {
         files,
         lines,
-        bytes,
+        //bytes,
     })
+}
+
+pub fn run(config: Config) -> MyResult<()> {
+    println!("{:#?}", config);
+    Ok(())
 }
