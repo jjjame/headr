@@ -7,7 +7,7 @@ type MyResult<T> = Result<T, Box<dyn Error>>;
 pub struct Config {
     files: Vec<String>,
     lines: usize,
-    //bytes: Option<usize>,
+    bytes: Option<usize>,
 }
 
 pub fn get_args() -> MyResult<Config> {
@@ -52,10 +52,15 @@ pub fn get_args() -> MyResult<Config> {
         .ok_or("shouldnt happen")?
         .parse::<usize>()?;
 
+    let bytes = args
+        .get_one::<String>("lines")
+        .ok_or("shouldnt happen")?
+        .parse::<usize>()?;
+
     Ok(Config {
         files,
         lines,
-        //bytes,
+        bytes: Some(bytes),
     })
 }
 
